@@ -1,0 +1,198 @@
+#include "Paint.hpp"
+#include "raylib.h"
+#include <cstddef>
+#include <cstdint>
+#include <format>
+#include <vector>
+
+constexpr int FPS = 240;
+
+constexpr int SCREEN_WIDTH = 1200;
+constexpr int SCREEN_HEIGHT = 900;
+
+constexpr int BRUSH_MIN = 2;
+constexpr int BRUSH_MAX = 50;
+constexpr int BRUSH_SCROLL_STEP = 5;
+
+constexpr int COLOR_TAB_HEIGHT = 50;
+
+void Paint::initColorRecs() {
+  constexpr float margin = 10.f;
+  constexpr float gap = 5.f;
+  constexpr float colorRectSize = 30.f;
+
+  for (size_t i = 0; i < c_Colors.size(); i++) {
+    m_ColorRecs[i].x = margin + (colorRectSize + gap) * i;
+    m_ColorRecs[i].y = (COLOR_TAB_HEIGHT - colorRectSize) / 2;
+    m_ColorRecs[i].width = colorRectSize;
+    m_ColorRecs[i].height = colorRectSize;
+  }
+}
+
+void Paint::initTarget() {
+  m_Target = LoadRenderTexture(SCREEN_WIDTH, SCREEN_HEIGHT);
+  BeginTextureMode(m_Target);
+  ClearBackground(c_Colors[0]);
+  EndTextureMode();
+}
+
+Paint::Paint() : m_ColorRecs(c_Colors.size()) { initColorRecs(); }
+
+Paint::~Paint() { UnloadRenderTexture(m_Target); }
+
+void Paint::run() {
+  InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Paint");
+  SetTargetFPS(FPS);
+
+  initTarget();
+
+  while (!WindowShouldClose()) {
+    handleInput();
+
+    BeginDrawing();
+    ClearBackground(RAYWHITE);
+    draw();
+    EndDrawing();
+  }
+  CloseWindow();
+}
+
+void Paint::handleInput() {
+  const Vector2 mousePos = GetMousePosition();
+  handleColorInput(mousePos);
+  handleClear();
+  handleSave();
+  handleBrushInput();
+  handleDrawing(mousePos);
+}
+
+void Paint::handleColorInput(const Vector2 &mousePos) {
+  // arrow keys color switching
+  if (IsKeyPressed(KEY_RIGHT)) {
+    m_SelectedColor = (m_SelectedColor + 1) % c_Colors.size();
+  } else if (IsKeyPressed(KEY_LEFT)) {
+    m_SelectedColor--;
+    if (m_SelectedColor < 0) {
+      m_SelectedColor = c_Colors.size() - 1;
+    }
+  }
+
+  // color hover
+  m_ColorMouseHover = -1;
+  for (size_t i = 0; i < m_ColorRecs.size(); i++) {
+    if (CheckCollisionPointRec(mousePos, m_ColorRecs[i])) {
+      m_ColorMouseHover = i;
+      break;
+    }
+  }
+
+  // color selection
+  if (m_ColorMouseHover >= 0 && IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
+    m_SelectedColor = m_ColorMouseHover;
+  }
+}
+void Paint::handleBrushInput() {
+  m_BrushSize += GetMouseWheelMove() * BRUSH_SCROLL_STEP;
+  if (m_BrushSize < BRUSH_MIN) {
+    m_BrushSize = BRUSH_MIN;
+  }
+  if (m_BrushSize > BRUSH_MAX) {
+    m_BrushSize = BRUSH_MAX;
+  }
+}
+
+void Paint::handleClear() {
+  if (IsKeyPressed(KEY_C)) {
+    BeginTextureMode(m_Target);
+    ClearBackground(c_Colors[0]);
+    EndTextureMode();
+  }
+}
+
+void Paint::handleSave() {
+  if (IsKeyDown(KEY_LEFT_CONTROL) && IsKeyPressed(KEY_S)) {
+    Image image = LoadImageFromTexture(m_Target.texture);
+    ImageFlipVertical(&image);
+    ImageCrop(&image,
+              (Rectangle){0, COLOR_TAB_HEIGHT, static_cast<float>(SCREEN_WIDTH),
+                          static_cast<float>(SCREEN_HEIGHT)});
+    const uint64_t time_ms = static_cast<uint64_t>(GetTime() * 1000);
+    const std::string fileName = std::format("painting_{}.png", time_ms);
+    ExportImage(image, fileName.c_str());
+    UnloadImage(image);
+  }
+}
+
+void Paint::handleDrawing(const Vector2 &mousePos) {
+  if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
+    BeginTextureMode(m_Target);
+    if (mousePos.y > COLOR_TAB_HEIGHT) {
+      DrawCircle(mousePos.x, mousePos.y, m_BrushSize,
+                 c_Colors[m_SelectedColor]);
+    }
+    EndTextureMode();
+  }
+
+  // erase / stop erase
+  if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT)) {
+    if (!m_IsMouseDown) {
+      m_PrevColor = m_SelectedColor;
+      m_SelectedColor = 0;
+      m_IsMouseDown = true;
+    }
+    BeginTextureMode(m_Target);
+    if (mousePos.y > COLOR_TAB_HEIGHT) {
+      DrawCircle(mousePos.x, mousePos.y, m_BrushSize, c_Colors[0]);
+    }
+    EndTextureMode();
+
+  } else if (IsMouseButtonReleased(MOUSE_BUTTON_RIGHT)) {
+    m_SelectedColor = m_PrevColor;
+    m_IsMouseDown = false;
+  }
+}
+
+void Paint::draw() {
+  drawTarget();
+  drawCirclePreview();
+  drawColorTab();
+}
+
+void Paint::drawTarget() {
+  DrawTextureRec(m_Target.texture,
+                 (Rectangle){0, 0, static_cast<float>(m_Target.texture.width),
+                             static_cast<float>(-m_Target.texture.height)},
+                 (Vector2){0, 0}, WHITE);
+}
+
+void Paint::drawCirclePreview() {
+  const Vector2 mousePos = GetMousePosition();
+
+  if (IsCursorOnScreen() && mousePos.y > COLOR_TAB_HEIGHT) {
+    DrawCircle(mousePos.x, mousePos.y, m_BrushSize, c_Colors[m_SelectedColor]);
+    if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT)) {
+      DrawCircleLines(mousePos.x, mousePos.y, m_BrushSize, BLACK);
+    }
+  }
+}
+
+void Paint::drawColorTab() {
+  DrawRectangle(0, 0, SCREEN_WIDTH, COLOR_TAB_HEIGHT, RAYWHITE);
+  for (size_t i = 0; i < m_ColorRecs.size(); i++) {
+    DrawRectangleRec(m_ColorRecs[i], c_Colors[i]);
+  }
+
+  // selected color border
+  const Rectangle selectedColorRec = m_ColorRecs[m_SelectedColor];
+  DrawRectangleLinesEx(
+      (Rectangle){selectedColorRec.x - 2, selectedColorRec.y - 2,
+                  selectedColorRec.width + 4, selectedColorRec.height + 4},
+      2.f, BLACK);
+
+  // hovered color fade
+  if (m_ColorMouseHover >= 0) {
+    const Rectangle hoveredColorRec = m_ColorRecs[m_ColorMouseHover];
+    DrawRectangleRec(hoveredColorRec, Fade(RAYWHITE, 0.6f));
+  }
+  DrawLine(0, COLOR_TAB_HEIGHT, SCREEN_WIDTH, COLOR_TAB_HEIGHT, BLACK);
+}

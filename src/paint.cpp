@@ -1,5 +1,6 @@
 #include "Paint.hpp"
 #include "raylib.h"
+#include "raymath.h"
 #include <cstddef>
 #include <cstdint>
 #include <format>
@@ -13,6 +14,7 @@ constexpr int SCREEN_HEIGHT = 900;
 constexpr int BRUSH_MIN = 2;
 constexpr int BRUSH_MAX = 50;
 constexpr int BRUSH_SCROLL_STEP = 5;
+constexpr float BRUSH_SPACING_FACTOR = 0.5f;
 
 constexpr int COLOR_TAB_HEIGHT = 50;
 
@@ -64,7 +66,6 @@ void Paint::handleInput() {
   handleSave();
   handleBrushInput();
   handleDrawing(mousePos);
-  m_PrevMousePos = mousePos;
 }
 
 void Paint::handleColorInput(const Vector2 &mousePos) {
@@ -125,31 +126,52 @@ void Paint::handleSave() {
 }
 
 void Paint::handleDrawing(const Vector2 &mousePos) {
-  if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
-    BeginTextureMode(m_Target);
-    if (mousePos.y > COLOR_TAB_HEIGHT) {
-      DrawCircle(mousePos.x, mousePos.y, m_BrushSize,
-                 c_Colors[m_SelectedColor]);
-    }
-    EndTextureMode();
+  bool isCursorOnPainting = mousePos.x > 0 && mousePos.x < SCREEN_WIDTH &&
+                            mousePos.y > COLOR_TAB_HEIGHT &&
+                            mousePos.y < SCREEN_HEIGHT;
+  if (!isCursorOnPainting) {
+    m_IsPainting = false;
+    return;
   }
 
-  // erase / stop erase
-  if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT)) {
-    if (!m_IsMouseDown) {
-      m_PrevColor = m_SelectedColor;
-      m_SelectedColor = 0;
-      m_IsMouseDown = true;
-    }
-    if (mousePos.y > COLOR_TAB_HEIGHT) {
-      BeginTextureMode(m_Target);
-      DrawCircle(mousePos.x, mousePos.y, m_BrushSize, c_Colors[0]);
-      EndTextureMode();
+  bool downLeft = IsMouseButtonDown(MOUSE_BUTTON_LEFT);
+  bool downRight = IsMouseButtonDown(MOUSE_BUTTON_RIGHT);
+
+  bool mouseDown = downLeft || downRight;
+
+  if (mouseDown && !m_IsPainting) {
+    m_PrevMousePos = mousePos;
+    m_IsPainting = true;
+  }
+
+  if (mouseDown) {
+    BeginTextureMode(m_Target);
+    Color drawColor = c_Colors[m_SelectedColor];
+
+    if (downRight) {
+      drawColor = c_Colors[0];
     }
 
-  } else if (IsMouseButtonReleased(MOUSE_BUTTON_RIGHT)) {
-    m_SelectedColor = m_PrevColor;
-    m_IsMouseDown = false;
+    // draw circles between prev mouse pos and mouse pos
+    float distance = Vector2Distance(m_PrevMousePos, mousePos);
+    float spacing = m_BrushSize * BRUSH_SPACING_FACTOR;
+    int steps = static_cast<int>(distance / (spacing)) + 1;
+
+    for (size_t i = 0; i <= steps; i++) {
+      float progress = i / static_cast<float>(steps);
+      Vector2 point = {
+          m_PrevMousePos.x + (mousePos.x - m_PrevMousePos.x) * progress,
+          m_PrevMousePos.y + (mousePos.y - m_PrevMousePos.y) * progress};
+      DrawCircleV(point, m_BrushSize, drawColor);
+    }
+    EndTextureMode();
+
+    m_PrevMousePos = mousePos;
+  }
+
+  if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT) ||
+      IsMouseButtonReleased(MOUSE_BUTTON_RIGHT)) {
+    m_IsPainting = false;
   }
 }
 

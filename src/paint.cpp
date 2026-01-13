@@ -64,6 +64,7 @@ void Paint::handleInput() {
   handleSave();
   handleBrushInput();
   handleDrawing(mousePos);
+  m_PrevMousePos = mousePos;
 }
 
 void Paint::handleColorInput(const Vector2 &mousePos) {
@@ -140,11 +141,11 @@ void Paint::handleDrawing(const Vector2 &mousePos) {
       m_SelectedColor = 0;
       m_IsMouseDown = true;
     }
-    BeginTextureMode(m_Target);
     if (mousePos.y > COLOR_TAB_HEIGHT) {
+      BeginTextureMode(m_Target);
       DrawCircle(mousePos.x, mousePos.y, m_BrushSize, c_Colors[0]);
+      EndTextureMode();
     }
-    EndTextureMode();
 
   } else if (IsMouseButtonReleased(MOUSE_BUTTON_RIGHT)) {
     m_SelectedColor = m_PrevColor;

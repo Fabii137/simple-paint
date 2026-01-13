@@ -34,6 +34,8 @@ private:
   std::vector<Rectangle> m_ColorRecs;
   RenderTexture2D m_Target;
 
+  Vector2 m_PrevMousePos;
+  bool m_IsDrawing = false;
   bool m_IsMouseDown = false;
   int m_ColorMouseHover = 0;
   int m_SelectedColor = 0;

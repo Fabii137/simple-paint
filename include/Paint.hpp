@@ -34,9 +34,9 @@ private:
   std::vector<Rectangle> m_ColorRecs;
   RenderTexture2D m_Target;
 
-  bool m_IsMouseDown = false;
+  Vector2 m_PrevMousePos;
+  bool m_IsPainting = false;
   int m_ColorMouseHover = 0;
-  int m_SelectedColor = 0;
-  int m_PrevColor = 0;
+  int m_SelectedColor = c_Colors.size() - 1;
   float m_BrushSize = 10.f;
 };

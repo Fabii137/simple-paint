@@ -61,11 +61,21 @@ void Paint::run() {
 
 void Paint::handleInput() {
   const Vector2 mousePos = GetMousePosition();
+  handleCursor(mousePos);
   handleColorInput(mousePos);
   handleClear();
   handleSave();
   handleBrushInput();
   handleDrawing(mousePos);
+}
+
+void Paint::handleCursor(const Vector2 &mousePos) {
+  if (isMouseOnCanvas(mousePos)) {
+    HideCursor();
+    return;
+  }
+
+  ShowCursor();
 }
 
 void Paint::handleColorInput(const Vector2 &mousePos) {
@@ -126,10 +136,7 @@ void Paint::handleSave() {
 }
 
 void Paint::handleDrawing(const Vector2 &mousePos) {
-  bool isCursorOnPainting = mousePos.x > 0 && mousePos.x < SCREEN_WIDTH &&
-                            mousePos.y > COLOR_TAB_HEIGHT &&
-                            mousePos.y < SCREEN_HEIGHT;
-  if (!isCursorOnPainting) {
+  if (!isMouseOnCanvas(mousePos)) {
     m_IsPainting = false;
     return;
   }
@@ -192,9 +199,13 @@ void Paint::drawCirclePreview() {
   const Vector2 mousePos = GetMousePosition();
 
   if (IsCursorOnScreen() && mousePos.y > COLOR_TAB_HEIGHT) {
-    DrawCircle(mousePos.x, mousePos.y, m_BrushSize, c_Colors[m_SelectedColor]);
-    if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT)) {
+
+    if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT)) { // erasing
+      DrawCircle(mousePos.x, mousePos.y, m_BrushSize, c_Colors[0]);
       DrawCircleLines(mousePos.x, mousePos.y, m_BrushSize, BLACK);
+    } else {
+      DrawCircle(mousePos.x, mousePos.y, m_BrushSize,
+                 c_Colors[m_SelectedColor]);
     }
   }
 }
@@ -202,15 +213,20 @@ void Paint::drawCirclePreview() {
 void Paint::drawColorTab() {
   DrawRectangle(0, 0, SCREEN_WIDTH, COLOR_TAB_HEIGHT, RAYWHITE);
   for (size_t i = 0; i < m_ColorRecs.size(); i++) {
-    DrawRectangleRec(m_ColorRecs[i], c_Colors[i]);
-  }
+    const Rectangle &rec = m_ColorRecs[i];
+    DrawRectangleRec(rec, c_Colors[i]);
 
-  // selected color border
-  const Rectangle selectedColorRec = m_ColorRecs[m_SelectedColor];
-  DrawRectangleLinesEx(
-      (Rectangle){selectedColorRec.x - 2, selectedColorRec.y - 2,
-                  selectedColorRec.width + 4, selectedColorRec.height + 4},
-      2.f, BLACK);
+    if (i == m_SelectedColor) {
+      // selected color border
+      DrawRectangleLinesEx(
+          (Rectangle){rec.x - 2, rec.y - 2, rec.width + 4, rec.height + 4}, 2.f,
+          BLACK);
+      continue;
+    }
+
+    // color border
+    DrawRectangleLinesEx(rec, 1.f, BLACK);
+  }
 
   // hovered color fade
   if (m_ColorMouseHover >= 0) {
@@ -218,4 +234,9 @@ void Paint::drawColorTab() {
     DrawRectangleRec(hoveredColorRec, Fade(RAYWHITE, 0.6f));
   }
   DrawLine(0, COLOR_TAB_HEIGHT, SCREEN_WIDTH, COLOR_TAB_HEIGHT, BLACK);
+}
+
+bool Paint::isMouseOnCanvas(const Vector2 &mousePos) {
+  return mousePos.x > 0 && mousePos.x < SCREEN_WIDTH &&
+         mousePos.y > COLOR_TAB_HEIGHT && mousePos.y < SCREEN_HEIGHT;
 }

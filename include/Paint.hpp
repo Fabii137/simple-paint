@@ -14,6 +14,7 @@ private:
   void initTarget();
 
   void handleInput();
+  void handleCursor(const Vector2 &mousePos);
   void handleColorInput(const Vector2 &mousePos);
   void handleBrushInput();
   void handleClear();
@@ -24,6 +25,8 @@ private:
   void drawTarget();
   void drawCirclePreview();
   void drawColorTab();
+
+  bool isMouseOnCanvas(const Vector2 &mousePos);
 
 private:
   const std::vector<Color> c_Colors = {

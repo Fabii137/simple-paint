@@ -1,45 +1,37 @@
 #pragma once
 
+#include "Canvas.hpp"
+#include "Toolbar.hpp"
+#include "Tools/Tool.hpp"
 #include "raylib.h"
-#include <vector>
+#include <memory>
 
 class Paint {
 public:
   Paint();
-  ~Paint();
   void run();
 
 private:
-  void initColorRecs();
-  void initTarget();
-
   void handleInput();
   void handleCursor(const Vector2 &mousePos);
-  void handleColorInput(const Vector2 &mousePos);
-  void handleBrushInput();
+  void handleToolInput(const Vector2 &mousePos);
   void handleClear();
   void handleSave();
-  void handleDrawing(const Vector2 &mousePos);
+
+  void selectTool(ToolType type);
 
   void draw();
-  void drawTarget();
   void drawCirclePreview();
-  void drawColorTab();
-
-  bool isMouseOnCanvas(const Vector2 &mousePos);
 
 private:
-  const std::vector<Color> c_Colors = {
-      RAYWHITE, YELLOW,    GOLD,      ORANGE, PINK,     RED,        MAROON,
-      GREEN,    LIME,      DARKGREEN, PURPLE, VIOLET,   DARKPURPLE, BEIGE,
-      BROWN,    DARKBROWN, LIGHTGRAY, GRAY,   DARKGRAY, BLACK};
+  Canvas m_Canvas;
+  Toolbar m_Toolbar;
 
-  std::vector<Rectangle> m_ColorRecs;
-  RenderTexture2D m_Target;
+  Color m_DrawColor = BLACK;
+  ToolType m_ActiveToolType = ToolType::BRUSH;
+  std::unique_ptr<Tool> m_ActiveTool;
 
   Vector2 m_PrevMousePos;
-  bool m_IsPainting = false;
-  int m_ColorMouseHover = 0;
-  int m_SelectedColor = c_Colors.size() - 1;
   float m_BrushSize = 10.f;
+  bool m_IsPainting = false;
 };

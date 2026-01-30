@@ -26,7 +26,7 @@ cmake --build .
 
 ## Features
 - Color switching (mouse selection or with arrow left/arrow right)
-- drawing (left click) or erasing (right click)
-- changing brush size (mouse wheel)
-- clear (C)
-- save (CTRL + S)
+- Brush (B) or Eraser(E)
+- Changing brush size (mouse wheel up/down)
+- Clear (C)
+- Save (CTRL + S)

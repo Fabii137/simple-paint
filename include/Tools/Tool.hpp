@@ -7,6 +7,7 @@ class Canvas;
 enum class ToolType {
   BRUSH,
   ERASER,
+  RECTANGLE,
 };
 
 class Tool {

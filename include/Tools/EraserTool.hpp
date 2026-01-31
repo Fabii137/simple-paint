@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Tools/Brush.hpp"
+#include "Tools/BrushTool.hpp"
 #include "Tools/Tool.hpp"
 #include "raylib.h"
 

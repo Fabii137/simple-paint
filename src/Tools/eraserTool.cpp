@@ -1,4 +1,4 @@
-#include "Tools/Eraser.hpp"
+#include "Tools/EraserTool.hpp"
 #include "Canvas.hpp"
 #include "raylib.h"
 

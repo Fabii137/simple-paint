@@ -35,6 +35,10 @@ void Toolbar::handleKeyboardInput() {
     m_SelectedTool = ToolType::ERASER;
     m_ToolChanged = true;
   }
+  if (IsKeyPressed(KEY_R)) {
+    m_SelectedTool = ToolType::RECTANGLE;
+    m_ToolChanged = true;
+  }
 
   // arrow key color switching
   if (IsKeyPressed(KEY_RIGHT)) {

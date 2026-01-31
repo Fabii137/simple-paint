@@ -1,4 +1,4 @@
-#include "Tools/Brush.hpp"
+#include "Tools/BrushTool.hpp"
 #include "Canvas.hpp"
 #include "raylib.h"
 #include "raymath.h"

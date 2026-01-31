@@ -1,6 +1,7 @@
 #include "Paint.hpp"
-#include "Tools/Brush.hpp"
-#include "Tools/Eraser.hpp"
+#include "Tools/BrushTool.hpp"
+#include "Tools/EraserTool.hpp"
+#include "Tools/RectangleTool.hpp"
 #include "Tools/Tool.hpp"
 #include "raylib.h"
 #include <cstdint>
@@ -117,6 +118,9 @@ void Paint::selectTool(ToolType type) {
     break;
   case ToolType::ERASER:
     m_ActiveTool = std::make_unique<Eraser>(m_BrushSize);
+    break;
+  case ToolType::RECTANGLE:
+    m_ActiveTool = std::make_unique<RectangleTool>(m_DrawColor);
     break;
   }
 }

@@ -33,3 +33,5 @@ cmake --build .
 	- Eraser (E)
 	- Rectangle (R)
 	- Line (L)
+    - Circle (O)
+    - Bucket Fill (F)

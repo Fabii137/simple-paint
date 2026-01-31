@@ -9,6 +9,8 @@ enum class ToolType {
   ERASER,
   RECTANGLE,
   LINE,
+  CIRCLE,
+  BUCKETFILL,
 };
 
 class Tool {

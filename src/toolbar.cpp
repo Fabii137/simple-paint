@@ -43,6 +43,14 @@ void Toolbar::handleKeyboardInput() {
     m_SelectedTool = ToolType::LINE;
     m_ToolChanged = true;
   }
+  if (IsKeyPressed(KEY_F)) {
+    m_SelectedTool = ToolType::BUCKETFILL;
+    m_ToolChanged = true;
+  }
+  if (IsKeyPressed(KEY_O)) {
+    m_SelectedTool = ToolType::CIRCLE;
+    m_ToolChanged = true;
+  }
 
   // arrow key color switching
   if (IsKeyPressed(KEY_RIGHT)) {

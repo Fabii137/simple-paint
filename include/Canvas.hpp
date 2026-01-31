@@ -20,6 +20,9 @@ public:
 
   Texture2D getTexture() const;
 
+  Image readImage() const;
+  void writeImage(Image &img);
+
 private:
   RenderTexture2D m_Target;
   int m_Width;

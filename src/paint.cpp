@@ -1,5 +1,7 @@
 #include "Paint.hpp"
 #include "Tools/BrushTool.hpp"
+#include "Tools/BucketFillTool.hpp"
+#include "Tools/CircleTool.hpp"
 #include "Tools/EraserTool.hpp"
 #include "Tools/LineTool.hpp"
 #include "Tools/RectangleTool.hpp"
@@ -125,6 +127,12 @@ void Paint::selectTool(ToolType type) {
     break;
   case ToolType::LINE:
     m_ActiveTool = std::make_unique<LineTool>(m_DrawColor);
+    break;
+  case ToolType::BUCKETFILL:
+    m_ActiveTool = std::make_unique<BucketFillTool>(m_DrawColor);
+    break;
+  case ToolType::CIRCLE:
+    m_ActiveTool = std::make_unique<CircleTool>(m_DrawColor);
     break;
   }
 }

@@ -49,3 +49,16 @@ bool Canvas::contains(Vector2 point) const {
 }
 
 Texture2D Canvas::getTexture() const { return m_Target.texture; }
+
+Image Canvas::readImage() const {
+  Image img = LoadImageFromTexture(m_Target.texture);
+  ImageFlipVertical(&img);
+  return img;
+}
+
+void Canvas::writeImage(Image &img) {
+  Texture2D tex = LoadTextureFromImage(img);
+  begin();
+  DrawTexture(tex, 0, 0, WHITE);
+  end();
+}

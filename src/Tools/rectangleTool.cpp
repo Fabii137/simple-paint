@@ -23,6 +23,9 @@ void RectangleTool::onDrag(Canvas &canvas, Vector2 pos) {
 }
 
 void RectangleTool::onRelease(Canvas &canvas, Vector2 pos) {
+  if (!m_Dragging)
+    return;
+
   m_End = pos;
   m_Dragging = false;
 

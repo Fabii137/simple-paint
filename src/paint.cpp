@@ -1,6 +1,7 @@
 #include "Paint.hpp"
 #include "Tools/BrushTool.hpp"
 #include "Tools/EraserTool.hpp"
+#include "Tools/LineTool.hpp"
 #include "Tools/RectangleTool.hpp"
 #include "Tools/Tool.hpp"
 #include "raylib.h"
@@ -121,6 +122,9 @@ void Paint::selectTool(ToolType type) {
     break;
   case ToolType::RECTANGLE:
     m_ActiveTool = std::make_unique<RectangleTool>(m_DrawColor);
+    break;
+  case ToolType::LINE:
+    m_ActiveTool = std::make_unique<LineTool>(m_DrawColor);
     break;
   }
 }

@@ -8,6 +8,7 @@ enum class ToolType {
   BRUSH,
   ERASER,
   RECTANGLE,
+  LINE,
 };
 
 class Tool {

@@ -6,7 +6,6 @@ Simple paint application written using Raylib
 - C++20
 
 ## Build & Run
-
 1. Create build directory:
 ```sh
 mkdir build
@@ -26,7 +25,11 @@ cmake --build .
 
 ## Features
 - Color switching (mouse selection or with arrow left/arrow right)
-- Brush (B) or Eraser(E)
 - Changing brush size (mouse wheel up/down)
 - Clear (C)
 - Save (CTRL + S)
+- Tools:
+	- Brush (B)
+	- Eraser (E)
+	- Rectangle (R)
+	- Line (L)

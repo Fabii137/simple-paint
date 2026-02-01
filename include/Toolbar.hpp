@@ -24,9 +24,9 @@ private:
 
 private:
   const std::vector<Color> c_Colors = {
-      RAYWHITE, YELLOW,    GOLD,      ORANGE, PINK,     RED,        MAROON,
-      GREEN,    LIME,      DARKGREEN, PURPLE, VIOLET,   DARKPURPLE, BEIGE,
-      BROWN,    DARKBROWN, LIGHTGRAY, GRAY,   DARKGRAY, BLACK};
+      WHITE, YELLOW,    GOLD,      ORANGE, PINK,     RED,        MAROON,
+      GREEN, LIME,      DARKGREEN, PURPLE, VIOLET,   DARKPURPLE, BEIGE,
+      BROWN, DARKBROWN, LIGHTGRAY, GRAY,   DARKGRAY, BLACK};
   std::vector<Rectangle> m_ColorRecs;
 
   ToolType m_SelectedTool = ToolType::BRUSH;

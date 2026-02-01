@@ -31,6 +31,8 @@ void LineTool::onRelease(Canvas &canvas, Vector2 pos) {
   canvas.end();
 }
 
+void LineTool::cancel() { m_Dragging = false; }
+
 void LineTool::drawPreview(Vector2 pos) const {
   if (!m_Dragging)
     return;

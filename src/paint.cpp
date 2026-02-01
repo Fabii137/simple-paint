@@ -89,6 +89,9 @@ void Paint::handleSave() {
 
 void Paint::handleToolInput(const Vector2 &mousePos) {
   if (!m_Canvas.contains(mousePos)) {
+    if (IsMouseButtonReleased(MOUSE_LEFT_BUTTON))
+      m_ActiveTool->cancel();
+
     return;
   }
 
@@ -112,6 +115,9 @@ void Paint::handleToolInput(const Vector2 &mousePos) {
 void Paint::selectTool(ToolType type) {
   if (m_ActiveToolType == type)
     return;
+
+  if (m_ActiveTool)
+    m_ActiveTool->cancel();
 
   m_ActiveToolType = type;
 

@@ -50,6 +50,8 @@ void Brush::onScroll(float delta) {
   }
 }
 
+void Brush::cancel() {}
+
 void Brush::drawPreview(Vector2 pos) const {
   DrawCircleV(pos, m_BrushSize, m_Color);
 }

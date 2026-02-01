@@ -24,5 +24,7 @@ public:
   virtual void onRelease(Canvas &canvas, Vector2 pos) = 0;
   virtual void onScroll(float delta) = 0;
 
+  virtual void cancel() {};
+
   virtual void drawPreview(Vector2 pos) const = 0;
 };

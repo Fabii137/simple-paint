@@ -41,6 +41,8 @@ void RectangleTool::drawPreview(Vector2 pos) const {
   DrawRectangleLinesEx(makeRect(m_Start, m_End), m_LineThickness, m_Color);
 }
 
+void RectangleTool::cancel() { m_Dragging = false; }
+
 Rectangle RectangleTool::makeRect(Vector2 start, Vector2 end) const {
   float x = std::min(start.x, end.x);
   float y = std::min(start.y, end.y);

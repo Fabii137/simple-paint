@@ -32,6 +32,6 @@ private:
   std::unique_ptr<Tool> m_ActiveTool;
 
   Vector2 m_PrevMousePos;
-  float m_BrushSize = 10.f;
+  float m_BrushSize = 2.f;
   bool m_IsPainting = false;
 };

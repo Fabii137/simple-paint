@@ -21,7 +21,6 @@ constexpr int TOOLBAR_HEIGHT = 50;
 Paint::Paint()
     : m_Toolbar(SCREEN_WIDTH, TOOLBAR_HEIGHT),
       m_Canvas(SCREEN_WIDTH, SCREEN_HEIGHT, TOOLBAR_HEIGHT) {
-  m_DrawColor = BLACK;
   m_ActiveTool = std::make_unique<Brush>(m_BrushSize, m_DrawColor);
 }
 

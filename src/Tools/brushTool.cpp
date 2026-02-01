@@ -13,11 +13,11 @@ Brush::Brush(float &brushSize, Color &color)
 
 void Brush::onPress(Canvas &canvas, Vector2 pos) {
   m_PrevPos = pos;
-  m_IsDrawing = true;
+  m_Drawing = true;
 }
 
 void Brush::onDrag(Canvas &canvas, Vector2 pos) {
-  if (!m_IsDrawing)
+  if (!m_Drawing)
     return;
 
   canvas.begin();
@@ -37,7 +37,11 @@ void Brush::onDrag(Canvas &canvas, Vector2 pos) {
   m_PrevPos = pos;
 }
 
-void Brush::onRelease(Canvas &canvas, Vector2 pos) { m_IsDrawing = false; }
+void Brush::onRelease(Canvas &canvas, Vector2 pos) { m_Drawing = false; }
+
+void Brush::onMouseEnterWhileDragging(Canvas &canvas, Vector2 pos) {
+  m_PrevPos = pos;
+}
 
 void Brush::onScroll(float delta) {
   m_BrushSize += delta * SCROLL_STEP;
@@ -49,8 +53,6 @@ void Brush::onScroll(float delta) {
     m_BrushSize = MIN_SIZE;
   }
 }
-
-void Brush::cancel() {}
 
 void Brush::drawPreview(Vector2 pos) const {
   DrawCircleV(pos, m_BrushSize, m_Color);

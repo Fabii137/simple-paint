@@ -10,7 +10,6 @@ public:
   void onPress(Canvas &canvas, Vector2 pos) override;
   void onDrag(Canvas &canvas, Vector2 pos) override;
   void onRelease(Canvas &canvas, Vector2 pos) override;
-  void onScroll(float delta) override {}
 
   void cancel() override;
 

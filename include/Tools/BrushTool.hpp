@@ -12,7 +12,7 @@ public:
   void onRelease(Canvas &canvas, Vector2 pos) override;
   void onScroll(float delta) override;
 
-  void cancel() override;
+  void onMouseEnterWhileDragging(Canvas &canvas, Vector2 pos) override;
 
   void drawPreview(Vector2 pos) const override;
 
@@ -23,5 +23,5 @@ private:
   Vector2 m_PrevPos{};
   Color &m_Color;
   float &m_BrushSize;
-  bool m_IsDrawing = false;
+  bool m_Drawing = false;
 };

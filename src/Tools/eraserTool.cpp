@@ -18,7 +18,9 @@ void Eraser::onRelease(Canvas &canvas, Vector2 pos) {
 
 void Eraser::onScroll(float delta) { m_Brush.onScroll(delta); }
 
-void Eraser::cancel() { m_Brush.cancel(); }
+void Eraser::onMouseEnterWhileDragging(Canvas &canvas, Vector2 pos) {
+  m_Brush.onMouseEnterWhileDragging(canvas, pos);
+}
 
 void Eraser::drawPreview(Vector2 pos) const {
   DrawCircleV(pos, m_Brush.getBrushSize(), m_Brush.getColor());

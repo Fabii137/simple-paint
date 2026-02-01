@@ -88,10 +88,18 @@ void Paint::handleSave() {
 }
 
 void Paint::handleToolInput(const Vector2 &mousePos) {
-  if (!m_Canvas.contains(mousePos)) {
+  bool isInCanvas = m_Canvas.contains(mousePos);
+  bool wasInCanvas = m_Canvas.contains(m_PrevMousePos);
+
+  if (isInCanvas && !wasInCanvas && IsMouseButtonDown(MOUSE_LEFT_BUTTON)) {
+    m_ActiveTool->onMouseEnterWhileDragging(m_Canvas, mousePos);
+  }
+
+  if (!isInCanvas) {
     if (IsMouseButtonReleased(MOUSE_LEFT_BUTTON))
       m_ActiveTool->cancel();
 
+    m_PrevMousePos = mousePos;
     return;
   }
 
@@ -110,6 +118,8 @@ void Paint::handleToolInput(const Vector2 &mousePos) {
   if (GetMouseWheelMove() != 0) {
     m_ActiveTool->onScroll(GetMouseWheelMove());
   }
+
+  m_PrevMousePos = mousePos;
 }
 
 void Paint::selectTool(ToolType type) {

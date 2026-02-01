@@ -19,12 +19,14 @@ public:
 
   virtual bool wantsHiddenCursor() const;
 
-  virtual void onPress(Canvas &canvas, Vector2 pos) = 0;
-  virtual void onDrag(Canvas &canvas, Vector2 pos) = 0;
-  virtual void onRelease(Canvas &canvas, Vector2 pos) = 0;
-  virtual void onScroll(float delta) = 0;
+  virtual void onPress(Canvas &canvas, Vector2 pos) {}
+  virtual void onDrag(Canvas &canvas, Vector2 pos) {}
+  virtual void onRelease(Canvas &canvas, Vector2 pos) {}
+  virtual void onScroll(float delta) {}
 
   virtual void cancel() {};
 
-  virtual void drawPreview(Vector2 pos) const = 0;
+  virtual void onMouseEnterWhileDragging(Canvas &canvas, Vector2 pos) {};
+
+  virtual void drawPreview(Vector2 pos) const {}
 };

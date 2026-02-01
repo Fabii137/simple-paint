@@ -13,7 +13,7 @@ public:
   void onRelease(Canvas &canvas, Vector2 pos) override;
   void onScroll(float delta) override;
 
-  void cancel() override;
+  void onMouseEnterWhileDragging(Canvas &canvas, Vector2 pos) override;
 
   void drawPreview(Vector2 pos) const override;
 
